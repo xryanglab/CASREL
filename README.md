@@ -111,3 +111,17 @@ optional arguments:
 
 ## Outputs
 
+### Regulator Contribution Summary
+
+The primary output of CASREL is a CSV file named `Regulator_contribution_summary.csv`, containing the predicted RNA splicing regulatory circuitry. This file will be generated in the user-specified output directory.
+
+#### File Structure
+
+| Column | Description |
+|--------|------------|
+| RBP | RNA binding protein (regulatory factor) |
+| AS_Event | Alternative splicing event (splicing site) regulated by the RBP |
+| Contribution | Predicted regulatory contribution score |
+| Regulation | Regulatory direction (`+` for promotion, `-` for inhibition) |
+
+This output file provides a comprehensive overview of the predicted regulatory relationships between RBPs and their target splicing events, including both the strength and direction of regulation.
