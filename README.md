@@ -85,7 +85,7 @@ optional arguments:
                         and separated by commas like "8, 10, 12".
 
   -i INPUT, --input INPUT
-                        input directory path.
+                        input directory path (also the output directory of the step `Data preprocessing`).
 
   -b, --batch           Whether to enable batch mode. If this is enabled, a single model will try to capture and output the predictions for all the sites specified.
 
@@ -106,7 +106,7 @@ optional arguments:
   -h, --help            show this help message and exit.
 
   -b BASE_DIR, --base BASE_DIR
-                        Input root directory (contains k1-k5 subdirectories), also the output directory. Defaults to the current directory.
+                        Input root directory (contains k1-k5 subdirectories, the output directory of the step `Train the models and explain the models`), also the output directory. Defaults to the current directory.
 ```
 
 ## Outputs
