@@ -42,7 +42,7 @@ First enter the directory `src` as the CWD.
 ### Prepare the single-cell AS matrix
 
 ```bash
-python get_filter/get_filter.py [-h] [--input YOUR_TAB_FILE] [--filter-output YOUR_OUTPUT_FILE]
+python get_filter/get_filter.py [-h] [--input YOUR_TAB_FILE] [--filter-output YOUR_AS_FILE]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -50,7 +50,7 @@ optional arguments:
   --splice_file YOUR_AS_FILE
                         Glob path pattern for tab files (e.g. /path/to/*SJ.out.tab). The SJ.out.tab file can be obtained by aligning the raw sequencing data in the regular STAR pipeline.
 
-  --filter-output YOUR_OUTPUT_FILE
+  --filter-output YOUR_AS_FILE
                         Filter result output prefix (will generate *_start.csv and *_end.csv).
 ```
 
