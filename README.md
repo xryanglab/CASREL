@@ -63,7 +63,7 @@ optional arguments:
   -h, --help            show this help message and exit
 
   --splice_file YOUR_AS_FILE
-                        path to the single-cell AS matrix file. If the path is xxx, we expect there would be xxx_start.csv and xxx_end.csv to represent the 3’ and 5’ AS data. xxx_start.csv and xxx_end.csv can also be obtained from the BAM files by SCASL.
+                        path to the single-cell AS matrix file ('output files' of the step 'Prepare the single-cell AS matrix'). If the path is xxx, we expect there would be xxx_start.csv and xxx_end.csv to represent the 3’ and 5’ AS data. xxx_start.csv and xxx_end.csv can also be obtained from the BAM files by SCASL.
 
   --gene_file YOUR_RBP_EXPRESSION_FILE
                         path to the single-cell RBP expression file. Should be a csv file.
@@ -85,7 +85,7 @@ optional arguments:
                         and separated by commas like "8, 10, 12".
 
   -i INPUT, --input INPUT
-                        input directory path (also the output directory of the step `Data preprocessing`).
+                        input directory path (also the 'output directory' of the step 'Data preprocessing').
 
   -b, --batch           Whether to enable batch mode. If this is enabled, a single model will try to capture and output the predictions for all the sites specified.
 
@@ -106,7 +106,7 @@ optional arguments:
   -h, --help            show this help message and exit.
 
   -b BASE_DIR, --base BASE_DIR
-                        Input root directory (contains k1-k5 subdirectories, the output directory of the step `Train the models and explain the models`), also the output directory. Defaults to the current directory.
+                        Input root directory (contains k1-k5 subdirectories, the 'output directory' of the step 'Train the models and explain the models'), also the output directory. Defaults to the current directory.
 ```
 
 ## Outputs
