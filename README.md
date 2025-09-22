@@ -22,11 +22,11 @@ You can also refer to the packages and their corresponding versions in `requirem
 ```bash
 > conda create -n rasnet -c conda-forge python=3.10.12 -y
 > source activate rasnet
+> pip install -r requirements.txt
+
+# Optional but not recommended
 > conda install -c conda-forge numpy pandas scikit-learn lightgbm easydict -y
 > conda install -c pytorch pytorch cpuonly -y
-
-# Use requirements.txt to align versions (optional but recommended)
-> pip install -r requirements.txt
 
 ```
 
