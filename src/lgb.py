@@ -5,7 +5,7 @@ import numpy as np
 import shap
 from sklearn.metrics import accuracy_score
 
-from .analyze_shap import generate_shap_analysis
+from analyze_shap import generate_shap_analysis
 
 
 class LightGBM:
