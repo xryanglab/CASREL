@@ -1,5 +1,5 @@
 # CASREL
-Cell-specific alternative splicing regulation inference via explainable learning
+Cell-specific alternative splicing regulation inference via explainable learning. The `demo` directory contains example notebooks and minimal test datasets to help users get started with CASREL. These materials demonstrate the complete workflow using a simplified dataset while serving as templates for analyzing your own data.
 
 
 ## Getting start ##
