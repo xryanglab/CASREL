@@ -2,7 +2,7 @@ import argparse
 import os
 import traceback
 import pandas as pd
-from .lgb import LightGBM
+from lgb import LightGBM
 from data_utils import save_shap, MetricLogger
 
 
