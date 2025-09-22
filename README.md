@@ -28,10 +28,6 @@ You can also refer to the packages and their corresponding versions in `requirem
 # Use requirements.txt to align versions (optional but recommended)
 > pip install -r requirements.txt
 
-# Verify (optional)
-> python -c "import torch, numpy, pandas, sklearn, lightgbm, easydict; \
-print('torch:', torch.__version__, 'cuda:', torch.cuda.is_available())"
-
 ```
 
 
