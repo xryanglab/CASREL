@@ -54,7 +54,7 @@ def train_one_site(
 ):
 
 
-    model = LightGBM(num_classes=4)
+    model = LightGBM(input_dim=X_train.shape[1], num_classes=4)
 
 
     accuracy = model.train(X_train, y_train[:, k], X_test, y_test[:, k])
