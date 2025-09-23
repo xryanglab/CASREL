@@ -6,20 +6,6 @@ The `demo` directory contains example notebook and minimal test dataset to help 
 
 ## Getting start ##
 
-### Dependencies and requirements
-
-Latest release of
-
-- Python3
-- PyTorch
-- NumPy
-- Pandas
-- Sci-kit Learn
-- LightGBM
-- EasyDict
-
-You can also refer to the packages and their corresponding versions in `requirements.txt`.
-
 ### Environment Setup
 ```bash
 > conda create -n casrel -c conda-forge python=3.10.12 -y
