@@ -36,7 +36,7 @@ def norm_only(df_path, groupby):
 def categorize_splice_prob(prob):
     if prob < 0.4:
         return 1
-    elif prob < 0.7:
+    elif prob < 0.6:
         return 2
     elif prob <= 1:
         return 3
