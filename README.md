@@ -2,9 +2,19 @@
 CASREL is a machine learning framework that infers RBP–alternative splicing regulatory networks de novo from single-cell RNA sequencing data, free of prior RBP–RNA binding annotations. By leveraging distinctive properties of single-cell splicing profiles and integrating ensemble learning with SHAP-based interpretation, CASREL enables accurate, interpretable, and cell-specific mapping of splicing regulation in physiological contexts.
 
 
-The `demo` directory contains an example notebook and a minimal test dataset to help users get started with CASREL. You can open and run `demo/CASREL_demo_notebook.ipynb` directly in Google Colab — the entire process takes approximately 10–15 minutes. These materials demonstrate the complete workflow using a simplified dataset while serving as templates for analyzing your own data.
+## 🚀 Quick Start
 
-## Getting start ##
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/xryanglab/CASREL/blob/main/demo/CASREL_demo_notebook.ipynb)
+
+The `demo/` directory contains an example notebook and a minimal test dataset
+to help users get started with CASREL. You can open and run
+[`CASREL_demo_notebook.ipynb`](https://colab.research.google.com/github/xryanglab/CASREL/blob/main/demo/CASREL_demo_notebook.ipynb)
+directly in Google Colab — the entire process takes approximately 10–15 minutes.
+These materials demonstrate the complete workflow using a simplified dataset
+while serving as templates for analyzing your own data.
+
+
+## Full Tutorial ##
 
 ### Environment Setup
 ```bash
