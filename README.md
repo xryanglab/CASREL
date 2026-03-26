@@ -1,4 +1,4 @@
-# CASREL （Cell-specific alternative splicing regulation inference via explainable learning） 
+# CASREL: Cell-specific alternative splicing regulation inference via explainable learning
 CASREL is a machine learning framework that infers RBP–alternative splicing regulatory networks de novo from single-cell RNA sequencing data, free of prior RBP–RNA binding annotations. By leveraging distinctive properties of single-cell splicing profiles and integrating ensemble learning with SHAP-based interpretation, CASREL enables accurate, interpretable, and cell-specific mapping of splicing regulation in physiological contexts.
 
 
