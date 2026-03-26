@@ -14,7 +14,7 @@ These materials demonstrate the complete workflow using a simplified dataset
 while serving as templates for analyzing your own data.
 
 
-## Full Tutorial ##
+## Tutorial ##
 
 ### Environment Setup
 ```bash
