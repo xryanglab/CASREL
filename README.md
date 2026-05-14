@@ -72,6 +72,17 @@ optional arguments:
                         Upper boundary for splice probability categorization. Probabilities `greater than or equal to` this value are assigned `category 3` (high). Values in `[low_threshold, high_threshold)` are assigned `category 2` (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`.
 ```
 
+## Arguments
+
+| Argument | Type | Default | Description |
+|---|---|---|---|
+| `--splice_file` | `str` | `../data/epall_filter` | Path **prefix** for splice CSV files. Given prefix `xxx`, the script expects `xxx_start.csv` and `xxx_end.csv` to exist in the same directory. |
+| `--gene_file` | `str` | `../data/epall_rbp.csv` | Path to the RBP gene expression CSV file (rows = genes, columns = samples). |
+| `--output_dir` | `str` | `../post_process_data/epall/` | Root output directory. Created automatically if it does not exist. |
+| `--low_threshold` | `float` | `0.4` | Lower boundary for splice probability categorization. Probabilities **strictly below** this value are assigned **category 1** (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
+| `--high_threshold` | `float` | `0.6` | Upper boundary for splice probability categorization. Probabilities **greater than or equal to** this value are assigned **category 3** (high). Values in `[low_threshold, high_threshold)` are assigned **category 2** (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
+
+
 
 ### Train the models and explain the models
 
