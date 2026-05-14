@@ -66,10 +66,10 @@ optional arguments:
                         output directory path.
 
   --low_threshold YOUR_CLASSIFICATION_THRESHOLD_LOW
-                        Lower boundary for splice probability categorization. Probabilities *strictly below* this value are assigned *category 1* (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. 
+                        Lower boundary for splice probability categorization. Probabilities `strictly below` this value are assigned `category 1` (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. 
 
   --high_threshold YOUR_CLASSIFICATION_THRESHOLD_HIGH
-                        Upper boundary for splice probability categorization. Probabilities *greater than or equal to* this value are assigned *category 3* (high). Values in `[low_threshold, high_threshold)` are assigned *category 2* (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`.
+                        Upper boundary for splice probability categorization. Probabilities `greater than or equal to` this value are assigned `category 3` (high). Values in `[low_threshold, high_threshold)` are assigned `category 2` (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`.
 ```
 
 
