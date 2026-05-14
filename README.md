@@ -39,7 +39,7 @@ First enter the directory `src` as the CWD.
 python get_filter/get_filter.py [-h] [--input YOUR_TAB_FILE] [--filter-output YOUR_AS_FILE]
 
 optional arguments:
-  -h, --help            Show the most complete help message and exit
+  -h, --help            Show the most complete help message and exit.
 ```
 | Argument | Type | Default | Description |
 |---|---|---|---|
@@ -55,7 +55,7 @@ optional arguments:
 python preprocess.py [-h] [--splice_file YOUR_AS_FILE] [--gene_file YOUR_RBP_EXPRESSION_FILE] [--output_dir YOUR_OUTPUT_DIR] [--low_threshold YOUR_CLASSIFICATION_THRESHOLD_LOW] [--high_threshold YOUR_CLASSIFICATION_THRESHOLD_HIGH]
 
 optional arguments:
-  -h, --help            Show the most complete help message and exit
+  -h, --help            Show the most complete help message and exit.
 ```
 
 | Argument | Type | Default | Description |
@@ -75,24 +75,13 @@ python train.py [-h] [-k K] [-i INPUT] [-b] [-o OUTPUT]
 
 optional arguments:
 
-  -h, --help            Show this help message and exit.
-
-  -k K                  column (site) index to train the model with. -1 means all columns. You can either specify a single column like 0, 1, or 2, or a range like 0-2, or a list wrapper by quotes
-                        and separated by commas like "8, 10, 12".
-
-  -i INPUT, --input INPUT
-                        input directory path (also the 'output directory' of the step 'Data preprocessing').
-
-  -b, --batch           Whether to enable batch mode. If this is enabled, a single model will try to capture and output the predictions for all the sites specified.
-
-  -o OUTPUT, --output OUTPUT
-                        output directory path.
+  -h, --help             Show the most complete help message and exit.
 ```
 | Argument | Type | Default | Description |
 |---|---|---|---|
 | `-k` | `str` | `-1` | column (site) index to train the model with. `-1` means all columns. You can either specify a single column like 0, 1, or 2, or a range like `0-2`, or a list wrapper by quotes and separated by commas like `8, 10, 12`. |
 | `-i` | `str` | `../post_process_data/demo` | input directory path (also the `output directory` of the step `Data preprocessing`).|
-| `-o` | `str` | `../output/demo` | Output the root directory (subdirectories k1-k5 will be created and written to the result). |
+| `-o` | `str` | `../output/demo` | Output the root directory (subdirectories `k1-k5` will be created and written to the result). |
 | `-f` | `str` | `k1,k2,k3,k4,k5` | A comma-separated list of subdirectories to be processed.|
 
 It is recommended to run multiple processes at once. You can either invoke multiple processes manually by specifying different `k` ranges (like `-k "0-399"`, `-k "400-799"`, etc.) or by using slurm and invoking multiple batch jobs.
@@ -104,11 +93,29 @@ It is recommended to run multiple processes at once. You can either invoke multi
 python reg_summary.py [-h] [-b BASE_DIR]
 
 optional arguments:
-  -h, --help            show this help message and exit.
-
-  -b BASE_DIR, --base BASE_DIR
-                        Input root directory (contains k1-k5 subdirectories, the 'output directory' of the step 'Train the models and explain the models'), also the output directory. Defaults to the current directory.
+  -h, --help            Show the most complete help message and exit.
 ```
+| Argument | Type | Default | Description |
+|---|---|---|---|
+| `-b` | `str` | `../output/demo` |  Input root directory (contains k1-k5 subdirectories, the `output directory` of the step `Train the models and explain the models`), also the output directory. |
+| `-f` | `str` | `k1,k2,k3,k4,k5` | A comma-separated list of subdirectories to be processed.|
+| `--threshold-mode` | `str` | `adaptive-knee` | OFeature importance filtering strategy. See details below. |
+| `--cumulative-pct` | `float` | `0.8` | Target cumulative contribution ratio, in range (0, 1]. For example, `0.80` retains genes accounting for the top 80% of total importance per site. Only applied when `--threshold-mode adaptive-cumulative` is set.|
+| `--shap-threshold` | `float` | `20.0` | Manual absolute SHAP difference threshold. Only applied when `--threshold-mode fixed` is set. |
+| `--acc-threshold` | `float` | `0.80` | Minimum model accuracy to retain a site. Sites with `accuracy ≤ threshold` are excluded. |
+| `--min-common-folders` | `int` | `5` | Minimum number of folds in which a gene–site pair must appear to be retained. Increasing this value improves result reproducibility. |
+| `--contribution-filter` | `str` | `knee` | Global post-hoc filter applied to the final aggregated `Contribution` values. |
+| `--top-per-site` | flag | disabled | If set, retains only the top-N RBPs per `AS_Site` × `Direction` group. |
+| `--top-n` | `int` | `20` | Number of top RBPs to keep per group when `--top-per-site` is enabled. |
+| `--processes` | `int` | `min(4, cpu_count)` | Number of parallel worker processes for fold-level I/O. |
+
+**Mode descriptions:**
+
+- **`adaptive-knee` (default)** — For each AS site, automatically detects the elbow/knee point of the cumulative `|shap1 − shap2|` contribution curve. Retains all features up to and including the knee. No manual threshold required.
+- **`adaptive-cumulative`** — For each AS site, retains features until their cumulative contribution reaches the target percentage defined by `--cumulative-pct`.
+- **`fixed`** — Applies a global manual threshold; retains only entries where `|shap1 − shap2| > --shap-threshold`.
+
+
 
 ## Outputs
 
