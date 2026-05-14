@@ -145,14 +145,14 @@ def main():
         "-i",
         "--input",
         type=str,
-        default="../post_process_data/epall",
+        default="../post_process_data/demo",
         help="Enter the root directory (which contains the k1-k5 subdirectories).",
     )
     parser.add_argument(
         "-o",
         "--output",
         type=str,
-        default="../output/epall",
+        default="../output/demo",
         help="Output the root directory (subdirectories k1-k5 will be created and written to the result).",
     )
     parser.add_argument(
