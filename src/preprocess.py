@@ -147,7 +147,7 @@ def main():
     parser.add_argument(
         "--splice_file",
         type=str,
-        default="../data/epall_filter",
+        default="../demo_filter",
         help=(
             "Path prefix for splice CSV files. "
             "Given prefix 'xxx', the script expects 'xxx_start.csv' and 'xxx_end.csv' to exist."
@@ -156,13 +156,13 @@ def main():
     parser.add_argument(
         "--gene_file",
         type=str,
-        default="../data/epall_rbp.csv",
+        default="../demo_RBP_expression.csv",
         help="Path to the CSV file containing RBP expression data.",
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        default="../post_process_data/epall/",
+        default="../post_process_data/demo/",
         help="Root directory for all output files.",
     )
     parser.add_argument(
