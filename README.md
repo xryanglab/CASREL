@@ -39,16 +39,14 @@ First enter the directory `src` as the CWD.
 python get_filter/get_filter.py [-h] [--input YOUR_TAB_FILE] [--filter-output YOUR_AS_FILE]
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            Show the most complete help message and exit
 ```
-#### Arguments
-
 | Argument | Type | Default | Description |
 |---|---|---|---|
 | `--splice_file` | `str` | `../*SJ.out.tab` | Glob path pattern for tab files. The SJ.out.tab file can be obtained by aligning the raw sequencing data in the regular STAR pipeline. |
-| `--filter-output` | `str` | `../data` | Filter result output prefix (will generate *_start.csv and *_end.csv). |
-| `--sites` | `int` | `10` | quality control of the AS matrix, minimum number of expressing cells per AS group. |
-| `--samples` | `int` | `1000` | quality control of the AS matrix, minimum number of expressing sites (sum of AS group) per cell. |
+| `--filter-output` | `str` | `../demo` | Filter result output prefix (will generate *_start.csv and *_end.csv). |
+| `--sites` | `int` | `10` | Quality control of the AS matrix, minimum number of expressing cells per AS group. |
+| `--samples` | `int` | `1000` | Quality control of the AS matrix, minimum number of expressing sites (sum of AS group) per cell. |
 
 
 ### Data preprocessing
@@ -57,16 +55,14 @@ optional arguments:
 python preprocess.py [-h] [--splice_file YOUR_AS_FILE] [--gene_file YOUR_RBP_EXPRESSION_FILE] [--output_dir YOUR_OUTPUT_DIR] [--low_threshold YOUR_CLASSIFICATION_THRESHOLD_LOW] [--high_threshold YOUR_CLASSIFICATION_THRESHOLD_HIGH]
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            Show the most complete help message and exit
 ```
-
-#### Arguments
 
 | Argument | Type | Default | Description |
 |---|---|---|---|
-| `--splice_file` | `str` | `../data_filter` | Path **prefix** for single-cell AS matrix file (`output files` of the step `Prepare the single-cell AS matrix`). If the path prefix is xxx, we expect there would be xxx_start.csv and xxx_end.csv to represent the 3’ and 5’ AS data. xxx_start.csv and xxx_end.csv can also be obtained from the BAM files by SCASL. |
-| `--gene_file` | `str` | `../data_RBP_expression.csv` | Path to the RBP gene expression CSV file (rows = genes, columns = cells). |
-| `--output_dir` | `str` | `../post_process_data/epall/` | Root output directory. Created automatically if it does not exist. |
+| `--splice_file` | `str` | `../demo_filter` | Path **prefix** for single-cell AS matrix file (`output files` of the step `Prepare the single-cell AS matrix`). If the path prefix is xxx, we expect there would be xxx_start.csv and xxx_end.csv to represent the 3’ and 5’ AS data. xxx_start.csv and xxx_end.csv can also be obtained from the BAM files by SCASL. |
+| `--gene_file` | `str` | `../demo_RBP_expression.csv` | Path to the RBP gene expression CSV file (rows = genes, columns = cells). |
+| `--output_dir` | `str` | `../post_process_data/demo/` | Root output directory. Created automatically if it does not exist. |
 | `--low_threshold` | `float` | `0.4` | Lower boundary for splice probability categorization. Probabilities **strictly below** this value are assigned **category 1** (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
 | `--high_threshold` | `float` | `0.6` | Upper boundary for splice probability categorization. Probabilities **greater than or equal to** this value are assigned **category 3** (high). Values in `[low_threshold, high_threshold)` are assigned **category 2** (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
 
@@ -79,7 +75,7 @@ python train.py [-h] [-k K] [-i INPUT] [-b] [-o OUTPUT]
 
 optional arguments:
 
-  -h, --help            show this help message and exit.
+  -h, --help            Show this help message and exit.
 
   -k K                  column (site) index to train the model with. -1 means all columns. You can either specify a single column like 0, 1, or 2, or a range like 0-2, or a list wrapper by quotes
                         and separated by commas like "8, 10, 12".
@@ -92,7 +88,12 @@ optional arguments:
   -o OUTPUT, --output OUTPUT
                         output directory path.
 ```
-
+| Argument | Type | Default | Description |
+|---|---|---|---|
+| `-k` | `str` | `-1` | column (site) index to train the model with. `-1` means all columns. You can either specify a single column like 0, 1, or 2, or a range like `0-2`, or a list wrapper by quotes and separated by commas like `8, 10, 12`. |
+| `-i` | `str` | `../post_process_data/demo` | input directory path (also the `output directory` of the step `Data preprocessing`).|
+| `-o` | `str` | `../output/demo` | Output the root directory (subdirectories k1-k5 will be created and written to the result). |
+| `-f` | `str` | `k1,k2,k3,k4,k5` | A comma-separated list of subdirectories to be processed.|
 
 It is recommended to run multiple processes at once. You can either invoke multiple processes manually by specifying different `k` ranges (like `-k "0-399"`, `-k "400-799"`, etc.) or by using slurm and invoking multiple batch jobs.
 
