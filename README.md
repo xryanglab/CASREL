@@ -105,7 +105,7 @@ optional arguments:
 It is recommended to run multiple processes at once. You can either invoke multiple processes manually by specifying different `k` ranges (like `-k "0-399"`, `-k "400-799"`, etc.) or by using slurm and invoking multiple batch jobs.
 
 #### Output Structure
-``
+```
 base_dir/
 ├── k1/
 │   ├── metric_logs/
@@ -146,7 +146,7 @@ optional arguments:
 
 - **`adaptive-knee` (default)** — For each AS site, automatically detects the elbow/knee point of the cumulative `|shap1 − shap2|` contribution curve. Retains all features up to and including the knee. No manual threshold required.
 - **`adaptive-cumulative`** — For each AS site, retains features until their cumulative contribution reaches the target percentage defined by `--cumulative-pct`.
-- **`fixed`** — Applies a global manual threshold; retains only entries where `|shap1 − shap2| > --shap-threshold`.
+- **`fixed`** — Applies a global manual threshold; retains only entries where `Contribution > --shap-threshold`.
 
 
 
