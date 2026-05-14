@@ -66,7 +66,25 @@ optional arguments:
 | `--low_threshold` | `float` | `0.4` | Lower boundary for splice probability categorization. Probabilities **strictly below** this value are assigned **category 1** (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
 | `--high_threshold` | `float` | `0.6` | Upper boundary for splice probability categorization. Probabilities **greater than or equal to** this value are assigned **category 3** (high). Values in `[low_threshold, high_threshold)` are assigned **category 2** (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
 
+#### Output Structure
 
+```
+<output_dir>/
+├── splice_df.csv            # Full categorized splice feature matrix (cells × splice sites)
+├── gene_exp_df.csv          # Full RBP gene expression matrix (cells × genes)
+├── train_splice_df.csv      # Training set splice features  (80% split)
+├── test_splice_df.csv       # Test set splice features      (20% split)
+├── train_gene_exp_df.csv    # Training set gene expression
+├── test_gene_exp_df.csv     # Test set gene expression
+├── k1/
+│   ├── train_splice_df.csv
+│   ├── test_splice_df.csv
+│   ├── train_gene_exp_df.csv
+│   ├── test_gene_exp_df.csv
+│   ├── splice_df.csv        # Full matrix (copy, for convenience)
+│   └── gene_exp_df.csv
+├── k2/ ... k5/              # Same structure for folds 2–5
+```
 
 ### Train the models and explain the models
 
@@ -86,6 +104,22 @@ optional arguments:
 
 It is recommended to run multiple processes at once. You can either invoke multiple processes manually by specifying different `k` ranges (like `-k "0-399"`, `-k "400-799"`, etc.) or by using slurm and invoking multiple batch jobs.
 
+#### Output Structure
+``
+base_dir/
+├── k1/
+│   ├── metric_logs/
+│   │   └── <model>/
+│   │       └── *.csv              # Must contain: accuracy, site_index, site
+│   └── shap_values/
+│       └── <model>/
+│           └── <column_N>/
+│               └── shap_analysis.csv   # First 3 columns: gene, shap1, shap2
+├── k2/
+│   └── ...
+└── ...
+```
+
 
 ### Screening of AS regulatory factors
 
@@ -102,7 +136,6 @@ optional arguments:
 | `--threshold-mode` | `str` | `adaptive-knee` | OFeature importance filtering strategy. See details below. |
 | `--cumulative-pct` | `float` | `0.8` | Target cumulative contribution ratio, in range (0, 1]. For example, `0.80` retains genes accounting for the top 80% of total importance per site. Only applied when `--threshold-mode adaptive-cumulative` is set.|
 | `--shap-threshold` | `float` | `20.0` | Manual absolute SHAP difference threshold. Only applied when `--threshold-mode fixed` is set. |
-| `--acc-threshold` | `float` | `0.80` | Minimum model accuracy to retain a site. Sites with `accuracy ≤ threshold` are excluded. |
 | `--min-common-folders` | `int` | `5` | Minimum number of folds in which a gene–site pair must appear to be retained. Increasing this value improves result reproducibility. |
 | `--contribution-filter` | `str` | `knee` | Global post-hoc filter applied to the final aggregated `Contribution` values. |
 | `--top-per-site` | flag | disabled | If set, retains only the top-N RBPs per `AS_Site` × `Direction` group. |
