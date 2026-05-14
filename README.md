@@ -144,7 +144,7 @@ optional arguments:
 
 **Mode descriptions:**
 
-- **`adaptive-knee` (default)** — For each AS site, automatically detects the elbow/knee point of the cumulative `|shap1 − shap2|` contribution curve. Retains all features up to and including the knee. No manual threshold required.
+- **`adaptive-knee` (default)** — For each AS site, automatically detects the elbow/knee point of the cumulative contribution curve. Retains all features up to and including the knee. No manual threshold required.
 - **`adaptive-cumulative`** — For each AS site, retains features until their cumulative contribution reaches the target percentage defined by `--cumulative-pct`.
 - **`fixed`** — Applies a global manual threshold; retains only entries where `Contribution > --shap-threshold`.
 
