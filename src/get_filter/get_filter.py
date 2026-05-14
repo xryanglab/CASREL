@@ -71,7 +71,7 @@ def build_cli():
     p.add_argument('--log', action='store_true', help='whether to output the quality distribution histogram to help determine the quality control standard, logical parameter (T or F).')
 
 
-    p.add_argument('-o', '--filter-output', default='process_result/filtered_matrix',
+    p.add_argument('-o', '--filter-output', default='../demo',
                    help='Filter result output prefix (will generate *_start.csv and *_end.csv).')
 
     return p
