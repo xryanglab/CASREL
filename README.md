@@ -51,33 +51,16 @@ optional arguments:
 ### Data preprocessing
 
 ```bash
-python preprocess.py [-h] [--splice_file YOUR_AS_FILE] [--gene_file YOUR_RBP_EXPRESSION_FILE] [--output_dir YOUR_OUTPUT_DIR]
+python preprocess.py [-h] [--splice_file YOUR_AS_FILE] [--gene_file YOUR_RBP_EXPRESSION_FILE] [--output_dir YOUR_OUTPUT_DIR] [--low_threshold YOUR_CLASSIFICATION_THRESHOLD_LOW] [--high_threshold YOUR_CLASSIFICATION_THRESHOLD_HIGH]
 
-optional arguments:
-  -h, --help            show this help message and exit
-
-  --splice_file YOUR_AS_FILE
-                        path to the single-cell AS matrix file ('output files' of the step 'Prepare the single-cell AS matrix'). If the path is xxx, we expect there would be xxx_start.csv and xxx_end.csv to represent the 3’ and 5’ AS data. xxx_start.csv and xxx_end.csv can also be obtained from the BAM files by SCASL.
-
-  --gene_file YOUR_RBP_EXPRESSION_FILE
-                        path to the single-cell RBP expression file. Should be a csv file.
-
-  --output_dir YOUR_OUTPUT_DIR
-                        output directory path.
-
-  --low_threshold YOUR_CLASSIFICATION_THRESHOLD_LOW
-                        Lower boundary for splice probability categorization. Probabilities `strictly below` this value are assigned `category 1` (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. 
-
-  --high_threshold YOUR_CLASSIFICATION_THRESHOLD_HIGH
-                        Upper boundary for splice probability categorization. Probabilities `greater than or equal to` this value are assigned `category 3` (high). Values in `[low_threshold, high_threshold)` are assigned `category 2` (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`.
 ```
 
 ## Arguments
 
 | Argument | Type | Default | Description |
 |---|---|---|---|
-| `--splice_file` | `str` | `../data/epall_filter` | Path **prefix** for splice CSV files. Given prefix `xxx`, the script expects `xxx_start.csv` and `xxx_end.csv` to exist in the same directory. |
-| `--gene_file` | `str` | `../data/epall_rbp.csv` | Path to the RBP gene expression CSV file (rows = genes, columns = samples). |
+| `--splice_file` | `str` | `../data_filter` | Path **prefix** for single-cell AS matrix file ('output files' of the step 'Prepare the single-cell AS matrix'). If the path and prefix is xxx, we expect there would be xxx_start.csv and xxx_end.csv to represent the 3’ and 5’ AS data. xxx_start.csv and xxx_end.csv can also be obtained from the BAM files by SCASL. |
+| `--gene_file` | `str` | `../data_RBP_expression.csv` | Path to the RBP gene expression CSV file (rows = genes, columns = samples). |
 | `--output_dir` | `str` | `../post_process_data/epall/` | Root output directory. Created automatically if it does not exist. |
 | `--low_threshold` | `float` | `0.4` | Lower boundary for splice probability categorization. Probabilities **strictly below** this value are assigned **category 1** (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
 | `--high_threshold` | `float` | `0.6` | Upper boundary for splice probability categorization. Probabilities **greater than or equal to** this value are assigned **category 3** (high). Values in `[low_threshold, high_threshold)` are assigned **category 2** (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
