@@ -133,16 +133,16 @@ optional arguments:
 |---|---|---|---|
 | `-b` | `str` | `../output/demo` |  Input root directory (contains k1-k5 subdirectories, the `output directory` of the step `Train the models and explain the models`), also the output directory. |
 | `-f` | `str` | `k1,k2,k3,k4,k5` | A comma-separated list of subdirectories to be processed.|
-| `--threshold-mode` | `str` | `adaptive-knee` | OFeature importance filtering strategy. See details below. |
-| `--cumulative-pct` | `float` | `0.8` | Target cumulative contribution ratio, in range (0, 1]. For example, `0.80` retains genes accounting for the top 80% of total importance per site. Only applied when `--threshold-mode adaptive-cumulative` is set.|
-| `--shap-threshold` | `float` | `20.0` | Manual absolute SHAP difference threshold. Only applied when `--threshold-mode fixed` is set. |
+| `--threshold-mode` | `str` | `adaptive-knee` | Feature importance filtering strategy. See details below. |
+| `--cumulative-pct` | `float` | `0.8` | Only applied when `--threshold-mode adaptive-cumulative` is set. Target cumulative contribution ratio, in range (0, 1]. For example, `0.80` retains genes accounting for the top 80% of total importance per site.|
+| `--shap-threshold` | `float` | `20.0` | Only applied when `--threshold-mode fixed` is set. Manual absolute SHAP difference threshold.|
 | `--min-common-folders` | `int` | `5` | Minimum number of folds in which a gene–site pair must appear to be retained. Increasing this value improves result reproducibility. |
 | `--contribution-filter` | `str` | `knee` | Global post-hoc filter applied to the final aggregated `Contribution` values. |
 | `--top-per-site` | flag | disabled | If set, retains only the top-N RBPs per `AS_Site` × `Direction` group. |
 | `--top-n` | `int` | `20` | Number of top RBPs to keep per group when `--top-per-site` is enabled. |
 | `--processes` | `int` | `min(4, cpu_count)` | Number of parallel worker processes for fold-level I/O. |
 
-**Mode descriptions:**
+**Feature importance filtering strategy descriptions:**
 
 - **`adaptive-knee` (default)** — For each AS site, automatically detects the elbow/knee point of the cumulative contribution curve. Retains all features up to and including the knee. No manual threshold required.
 - **`adaptive-cumulative`** — For each AS site, retains features until their cumulative contribution reaches the target percentage defined by `--cumulative-pct`.
