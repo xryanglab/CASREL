@@ -109,10 +109,10 @@ It is recommended to run multiple processes at once. You can either invoke multi
 base_dir/
 ├── k1/
 │   ├── metric_logs/
-│   │   └── <model>/
+│   │   └── lgbm/
 │   │       └── *.csv              # Must contain: accuracy, site_index, site
 │   └── shap_values/
-│       └── <model>/
+│       └── lgbm/
 │           └── <column_N>/
 │               └── shap_analysis.csv   # First 3 columns: gene, shap1, shap2
 ├── k2/
