@@ -63,7 +63,7 @@ optional arguments:
 | `--splice_file` | `str` | `../demo_filter` | Path **prefix** for single-cell AS matrix file (`output files` of the step `Prepare the single-cell AS matrix`). If the path prefix is xxx, we expect there would be xxx_start.csv and xxx_end.csv to represent the 3’ and 5’ AS data. xxx_start.csv and xxx_end.csv can also be obtained from the BAM files by SCASL. |
 | `--gene_file` | `str` | `../demo_RBP_expression.csv` | Path to the RBP gene expression CSV file (rows = genes, columns = cells). |
 | `--output_dir` | `str` | `../post_process_data/demo/` | Root output directory. Created automatically if it does not exist. |
-| `--low_threshold` | `float` | `0.4` | Lower boundary for splice probability categorization. Probabilities **strictly below** this value are assigned **category 1** (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
+| `--low_threshold` | `float` | `0.4` | Lower boundary for splice probability categorization. Probabilities strictly **below** this value are assigned **category 1** (low). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
 | `--high_threshold` | `float` | `0.6` | Upper boundary for splice probability categorization. Probabilities **greater than or equal to** this value are assigned **category 3** (high). Values in `[low_threshold, high_threshold)` are assigned **category 2** (medium). Must satisfy `0 ≤ low_threshold < high_threshold ≤ 1`. |
 
 #### Output Structure
