@@ -1,0 +1,657 @@
+# =============================================================================
+# Suppl figure 1
+# =============================================================================
+
+reg = read.table('fcn/tnbc/tnbc_reg_summary.csv', sep = ',',  header = T, stringsAsFactors = F)
+reg[1:5,]
+reg$cor = abs(reg$Inhibit - reg$Promote)
+df3 = data.frame(rbp = reg$site_index, shap = reg$cor, type = 'LR', stringsAsFactors = F)
+
+fcn = read.table('fcn/tnbc/fcn_shap_summary.csv', sep = ',',  header = T, stringsAsFactors = F)
+fcn[1:5,]
+fcn$shap = abs(fcn$aggregated_shap_inhibit - fcn$aggregated_shap_exhibit)
+lgb = read.table('fcn/tnbc/lgbm_shap_summary.csv', sep = ',',  header = T, stringsAsFactors = F)
+lgb[1:5,]
+lgb$shap = abs(lgb$aggregated_shap_inhibit - lgb$aggregated_shap_exhibit)
+temp = unique(lgb$site)
+shaps = c()
+for (i in 1:length(temp)) {
+  temps = sum(lgb$shap[which(lgb$site == temp[i])])
+  shaps = c(shaps, temps)
+}
+lgb = lgb[-which(shaps == 0),]
+
+temp = unique(fcn$site)
+shaps = c()
+for (i in 1:length(temp)) {
+  temps = sum(fcn$shap[which(fcn$site == temp[i])])
+  shaps = c(shaps, temps)
+}
+fcn = fcn[-which(shaps == 0),]
+
+df1 = data.frame(rbp = fcn$X, shap = fcn$shap, type = 'FCN', stringsAsFactors = F)
+df2 = data.frame(rbp = lgb$X, shap = lgb$shap, type = 'GBDT', stringsAsFactors = F)
+
+df = rbind(df1,df2,df3)
+
+
+ggplot(df) +
+  ggridges::geom_density_ridges(aes(x = shap, y = type, fill = type))+
+  scale_fill_manual(values =c("#475f8c","#6B8F71","#C89595"))+
+  ggtitle("The distribution of contribution values in models")+ 
+  theme_bw()+ 
+  theme(
+    axis.text.x=element_text(colour="black",size=10), 
+    axis.text.y=element_text(size=15,face="plain"), 
+    axis.title.y=element_text(size = 15,face="plain"), 
+    axis.title.x=element_text(size = 15,face="plain"),
+    plot.title = element_text(size=15,face="bold",hjust = 0.5), 
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())+
+  guides(fill=guide_legend(title=NULL)) +
+  ylab("Model")+xlab("SHAP value")
+
+
+
+# =============================================================================
+# Suppl figure 2
+# =============================================================================
+
+library(ggplot2)
+
+acs = list()
+ss = list()
+accuracy = c()
+plotshap = c()
+for (i in 1:5) {
+  fn = paste0("k", i)
+  fna = paste(fn, 'lgb_accuracy.csv', sep = '_')
+  fns = paste(fn, 'lgb_shap_summary.csv', sep = '_')
+  ac = read.table(file = fna, sep = ',',  header = T, stringsAsFactors = F)
+  shap = read.table(file = fns, sep = ',',  header = T, stringsAsFactors = F)
+  site = strsplit(shap$site, split = '[.]')
+  site = do.call(rbind, site)
+  shap$type = '-'
+  shap$type[which(shap$aggregated_shap_inhibit < shap$aggregated_shap_exhibit)] = '+'
+  shap$sum = paste(shap$X, site[,1], shap$type, sep = '_')
+  shap$shap = shap$aggregated_shap_inhibit - shap$aggregated_shap_exhibit
+  shap$site = site[,1]
+  plots = data.frame(rbp = shap$X, shap = shap$shap, lab = fn, stringsAsFactors = F)
+  shap = shap[which(abs(shap$shap) > 10),]
+  gs = ac$site[which(ac$accuracy >= 0.85)]
+  shap = shap[shap$site %in% gs,]
+  ac$lab = fn
+  acs[[fn]] <- ac
+  ss[[fn]] <- shap
+  plotshap = rbind(plotshap,plots)
+  accuracy = rbind(accuracy, ac)
+}
+max(shap$shap)
+
+
+ggplot(accuracy) +
+  ggridges::geom_density_ridges(aes(x = accuracy, y = lab, fill = lab))+
+  scale_fill_manual(values = c('#000000',"#EE7600","#006400","#8B8B00","#104E8B","#CD3333"))+
+  ggtitle("The prediction accuracy distribution of each fold")+ #设置总的标题
+  theme_bw()+ 
+  theme(
+    axis.text.x=element_text(colour="black",size=10), 
+    axis.text.y=element_text(size=15,face="plain"), 
+    axis.title.y=element_text(size = 15,face="plain"), 
+    axis.title.x=element_text(size = 15,face="plain"),
+    plot.title = element_text(size=15,face="bold",hjust = 0.5), 
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())+
+  guides(fill=guide_legend(title=NULL)) +
+  ylab("Density")+xlab("Accuracy")
+
+
+# =============================================================================
+# Suppl figure 3
+# =============================================================================
+ac5 = read.table('kt5_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac25 = read.table('kt25_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac80 = read.table('kt80_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac100 = read.table('kt100_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac200 = read.table('kt200_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac400 = read.table('kt400_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac800 = read.table('kt800_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac1500 = read.table('kt1500_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac3000 = read.table('kt3000_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac6000 = read.table('kt6000_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+ac12000 = read.table('kt12000_lgb_accuracy.csv', sep = ',',  header = T, stringsAsFactors = F)
+
+
+c = c(mean(ac12000$accuracy),mean(ac6000$accuracy),mean(ac3000$accuracy),mean(ac1500$accuracy),mean(ac800$accuracy),
+      mean(ac400$accuracy),mean(ac200$accuracy),mean(ac100$accuracy),mean(ac80$accuracy),mean(ac25$accuracy),mean(ac5$accuracy),0)
+
+cn = c(12000,6000,3000,1500,800,400,200,100,80,25,5,0)
+
+df = data.frame(cell_number = cn, accuarcy = c, stringsAsFactors = F)
+
+df$cell_number = as.character(df$cell_number)
+df$cell_number <- factor(df$cell_number, levels = unique(df$cell_number), ordered = TRUE)
+
+library(ggplot2)
+ggplot(df, aes(x = cell_number, y = accuarcy)) +
+  geom_point() + 
+  theme_bw()+ 
+  theme(axis.text.x=element_text(angle=30,hjust = 1,colour="black",size=15), 
+        axis.text.y=element_text(size=15,face="plain"), 
+        axis.title.y=element_text(size = 15,face="plain"), 
+        axis.title.x=element_text(size = 15,face="plain"), 
+        plot.title = element_text(size=15,face="bold",hjust = 0.5), 
+        panel.border = element_blank(),axis.line = element_line(colour = "black",size=1), 
+        legend.text=element_text(face="italic", colour="black",  
+                                 size=15),
+        legend.title=element_text(face="italic", colour="black", 
+                                  size=15),
+        panel.grid.minor = element_blank())+  
+  geom_smooth(method = "loess", se = FALSE, color = "black", size = 0.5) + 
+  labs(x = "Cell Number", y = "Mean accuracy", title = "Accuracy vs Cell Number")  
+
+
+
+numbers <- c(12000,6000,3000,1500, 800, 400, 200, 100, 80, 60, 50, 40, 35)
+
+for (num in numbers) {
+  vector_name <- paste0("kt", num)
+  assign(vector_name, vector(mode = "numeric", length = 0))
+}
+
+
+mono = c()
+ss = list()
+for (i in 1:length(numbers)) {
+  lgbmono = c()
+  vector_name <- paste0("kt", numbers[i])
+  f_name <- paste0(vector_name,'_lgb_shap_summary.csv')
+  lgb = read.table(f_name, sep = ',',  header = T, stringsAsFactors = F)
+  for (j in 1:length(unique(lgb$site))) {
+    site = unique(lgb$site)[j]
+    lgb1 = lgb[which(lgb$site == site),]
+    prolgb1 = length(lgb1$site[which(lgb1$aggregated_shap_inhibit/lgb1$aggregated_shap_exhibit < 0.5 | lgb1$aggregated_shap_inhibit/lgb1$aggregated_shap_exhibit > 5)]) / length(lgb1$site)
+    lgbmono = c(lgbmono,prolgb1)
+  }
+  tempmean = mean(lgbmono)
+  mono = c(mono, tempmean)
+  ss[[vector_name]] <- lgbmono
+}
+
+lgb = read.table('tc_nsclc/summary/k1_lgb_shap_summary.csv', sep = ',',  header = T, stringsAsFactors = F)
+lgbmono = c()
+for (j in 1:length(unique(lgb$site))) {
+  site = unique(lgb$site)[j]
+  lgb1 = lgb[which(lgb$site == site),]
+  prolgb1 = length(lgb1$site[which(lgb1$aggregated_shap_inhibit/lgb1$aggregated_shap_exhibit < 0.5 | lgb1$aggregated_shap_inhibit/lgb1$aggregated_shap_exhibit > 5)]) / length(lgb1$site)
+  lgbmono = c(lgbmono,prolgb1)
+}
+
+
+cn = c(12000,6000,3000,1500, 800, 400, 200, 100, 80, 60, 50, 40)
+df = data.frame(cell_number = cn, accuarcy = db[1:12], stringsAsFactors = F)
+
+df$cell_number = as.character(df$cell_number)
+df$cell_number <- factor(df$cell_number, levels = unique(df$cell_number), ordered = TRUE)
+
+
+ggplot(df, aes(x = cell_number, y = accuarcy)) +
+  geom_point() + 
+  theme_bw()+ 
+  theme(axis.text.x=element_text(angle=30,hjust = 1,colour="black",size=15), 
+        axis.text.y=element_text(size=15,face="plain"), 
+        axis.title.y=element_text(size = 15,face="plain"),
+        axis.title.x=element_text(size = 15,face="plain"), 
+        plot.title = element_text(size=15,face="bold",hjust = 0.5), 
+        panel.border = element_blank(),axis.line = element_line(colour = "black",size=1), 
+        legend.text=element_text(face="italic", colour="black",  
+                                 size=15),
+        legend.title=element_text(face="italic", colour="black", 
+                                  size=15),
+        panel.grid.minor = element_blank())+  
+  geom_smooth(method = "loess", se = FALSE, color = "black", size = 0.5) + 
+  labs(x = "Cell Number", y = "RBPs with monotonic effects", title = "Monotonic Effects with Different Cell Number") 
+
+stable = read.table('tc_nsclc/stable_t400cell_sample_percent.csv', sep = ',',  header = T, stringsAsFactors = F)
+
+ggplot(df, aes(x = cell_number, y = stable)) +
+  geom_point() + 
+  theme_bw()+ 
+  theme(axis.text.x=element_text(angle=30,hjust = 1,colour="black",size=15), 
+        axis.text.y=element_text(size=15,face="plain"), 
+        axis.title.y=element_text(size = 15,face="plain"), 
+        axis.title.x=element_text(size = 15,face="plain"), 
+        plot.title = element_text(size=15,face="bold",hjust = 0.5), 
+        panel.border = element_blank(),axis.line = element_line(colour = "black",size=1), 
+        legend.text=element_text(face="italic", colour="black",  
+                                 size=15),
+        legend.title=element_text(face="italic", colour="black", 
+                                  size=15),
+        panel.grid.minor = element_blank())+  
+  geom_smooth(method = "loess", se = FALSE, color = "black", size = 0.5) + 
+  labs(x = "Cell Number", y = "Stable_400", title = "Stable percent vs Cell Number")  
+
+
+# =============================================================================
+# Suppl figure 4
+# =============================================================================
+library(data.table)
+library(dplyr)
+library(ggplot2)
+
+net_files <- c(
+  "tnbc1_Regulator_contribution_summary.csv",
+  "tnbc2_Regulator_contribution_summary.csv",
+  "hccdc_Regulator_contribution_summary.csv",
+  "hccmac_Regulator_contribution_summary.csv",
+  "hccnk_Regulator_contribution_summary.csv",
+  "tcell_hcc_Regulator_contribution_summary.csv",
+  "tcell_nsclc_Regulator_contribution_summary.csv",
+  "tcell_crc_Regulator_contribution_summary.csv",
+  "pdac_Regulator_contribution_summary.csv"
+)
+
+use_fdr        <- TRUE
+pval_threshold <- 0.05
+das_threshold  <- 0.1
+das_cache_file <- "das_cache.rds"
+
+build_prob_obj <- function(prob_df, sample_info, cell_name) {
+  if (!"sample_id" %in% names(sample_info) && "file_accession" %in% names(sample_info))
+    names(sample_info)[names(sample_info) == "file_accession"] <- "sample_id"
+  site_col       <- names(prob_df)[1]
+  sample_cols    <- setdiff(names(prob_df), site_col)
+  common_samples <- intersect(sample_cols, sample_info$sample_id)
+  prob_df        <- prob_df[, c(site_col, common_samples), drop = FALSE]
+  ctrl_label     <- "Non-specific target control"
+  ctrl_ids       <- intersect(sample_info$sample_id[sample_info$target == ctrl_label], common_samples)
+  rbp_list       <- setdiff(unique(sample_info$target), ctrl_label)
+  list(prop_mat = prob_df, sample_cols = common_samples,
+       ctrl_ids = ctrl_ids, rbp_list = rbp_list, cell = cell_name)
+}
+
+preprocess_net <- function(net_file) {
+  net   <- fread(net_file, data.table = FALSE, colClasses = "character")
+  n_raw <- nrow(net)
+  no_chr <- !grepl("^chr", net$AS_Site)
+  if (any(no_chr)) {
+    cat(sprintf("    [Preprocessing] Added chr prefix: %d rows\n", sum(no_chr)))
+    net$AS_Site[no_chr] <- paste0("chr", net$AS_Site[no_chr])
+  }
+  cat(sprintf("    [Preprocessing] Original %d rows -> retained %d rows\n", n_raw, nrow(net)))
+  out_path <- gsub("\\.csv$", "_processed.csv", net_file)
+  fwrite(net, out_path, row.names = FALSE, quote = FALSE)
+  cat(sprintf("    [Preprocessing] Saved: %s\n", out_path))
+  net
+}
+
+net_list        <- list()
+all_needed_rbps <- character(0)
+for (nf in net_files) {
+  cat(sprintf("\nPreprocessing: %s\n", nf))
+  net             <- preprocess_net(nf)
+  net_list[[nf]]  <- net
+  all_needed_rbps <- union(all_needed_rbps, unique(net$RBP))
+}
+cat(sprintf("\nTotal RBPs across all net_files: %d\n", length(all_needed_rbps)))
+
+k562_prob         <- fread("k562_AS_probability_matrix.csv",  data.table = FALSE)
+sample_info_k562  <- fread("k526_rbp_file.csv",               data.table = FALSE)
+hepg2_prob        <- fread("HepG2_AS_probability_matrix.csv", data.table = FALSE)
+sample_info_hepg2 <- fread("hepg2_rbp_file.csv",              data.table = FALSE)
+
+cat("Building K562 prob_obj ...\n")
+k562_obj <- build_prob_obj(k562_prob, sample_info_k562, "K562")
+cat(sprintf("  K562: %d sites, %d samples, %d ctrl, %d RBPs\n",
+            nrow(k562_obj$prop_mat), length(k562_obj$sample_cols),
+            length(k562_obj$ctrl_ids), length(k562_obj$rbp_list)))
+
+cat("Building HEPG2 prob_obj ...\n")
+hepg2_obj <- build_prob_obj(hepg2_prob, sample_info_hepg2, "HEPG2")
+cat(sprintf("  HEPG2: %d sites, %d samples, %d ctrl, %d RBPs\n",
+            nrow(hepg2_obj$prop_mat), length(hepg2_obj$sample_cols),
+            length(hepg2_obj$ctrl_ids), length(hepg2_obj$rbp_list)))
+
+k562_site_col  <- names(k562_obj$prop_mat)[1]
+hepg2_site_col <- names(hepg2_obj$prop_mat)[1]
+covered_sites  <- intersect(k562_obj$prop_mat[[k562_site_col]],
+                            hepg2_obj$prop_mat[[hepg2_site_col]])
+cat(sprintf("K562 ∩ HEPG2 covered sites: %d\n", length(covered_sites)))
+
+k562_obj$prop_mat  <- k562_obj$prop_mat[
+  k562_obj$prop_mat[[k562_site_col]]   %in% covered_sites, , drop = FALSE]
+hepg2_obj$prop_mat <- hepg2_obj$prop_mat[
+  hepg2_obj$prop_mat[[hepg2_site_col]] %in% covered_sites, , drop = FALSE]
+
+rbp_cache <- new.env(hash = TRUE)
+if (file.exists(das_cache_file)) {
+  cached <- readRDS(das_cache_file)
+  for (nm in names(cached)) assign(nm, cached[[nm]], envir = rbp_cache, inherits = FALSE)
+  cat(sprintf("Loaded %d RBPs from cache.\n", length(names(cached))))
+  rm(cached)
+} else {
+  cat("No cache file found.\n")
+}
+
+compute_das_from_obj <- function(prob_obj, rbp_name, sample_info) {
+  if (!"sample_id" %in% names(sample_info) && "file_accession" %in% names(sample_info))
+    names(sample_info)[names(sample_info) == "file_accession"] <- "sample_id"
+  kd_ids   <- intersect(sample_info$sample_id[sample_info$target == rbp_name], prob_obj$sample_cols)
+  ctrl_ids <- prob_obj$ctrl_ids
+  if (length(kd_ids) == 0 || length(ctrl_ids) < 2) return(NULL)
+  site_col  <- names(prob_obj$prop_mat)[1]
+  mat       <- prob_obj$prop_mat
+  kd_m      <- as.matrix(mat[, kd_ids,   drop = FALSE])
+  ctrl_m    <- as.matrix(mat[, ctrl_ids, drop = FALSE])
+  mean_kd   <- rowMeans(kd_m,   na.rm = TRUE)
+  mean_ctrl <- rowMeans(ctrl_m, na.rm = TRUE)
+  das_val   <- mean_kd - mean_ctrl
+  pvals <- vapply(seq_len(nrow(mat)), function(i) {
+    x <- kd_m[i,   !is.na(kd_m[i,   ])]
+    y <- ctrl_m[i, !is.na(ctrl_m[i, ])]
+    if (length(x) < 2 || length(y) < 2) return(NA_real_)
+    alt <- if (mean_kd[i] >= mean_ctrl[i]) "greater" else "less"
+    tryCatch(suppressWarnings(wilcox.test(x, y, alternative = alt, exact = FALSE)$p.value),
+             error = function(e) NA_real_)
+  }, numeric(1))
+  data.frame(site = mat[[site_col]], mean_kd = mean_kd, mean_ctrl = mean_ctrl,
+             das = das_val, pvalue = pvals, cell = prob_obj$cell, stringsAsFactors = FALSE)
+}
+
+compute_rbps <- intersect(all_needed_rbps, intersect(k562_obj$rbp_list, hepg2_obj$rbp_list))
+new_rbps     <- compute_rbps[!sapply(compute_rbps, exists, envir = rbp_cache, inherits = FALSE)]
+cat(sprintf("RBPs: %d total | %d cached | %d to compute\n",
+            length(compute_rbps), length(compute_rbps) - length(new_rbps), length(new_rbps)))
+
+if (length(new_rbps) > 0) {
+  for (i in seq_along(new_rbps)) {
+    rbp   <- new_rbps[i]
+    parts <- Filter(Negate(is.null), list(
+      compute_das_from_obj(k562_obj,  rbp, sample_info_k562),
+      compute_das_from_obj(hepg2_obj, rbp, sample_info_hepg2)
+    ))
+    if (length(parts) > 0) {
+      res     <- do.call(rbind, parts)
+      res$rbp <- rbp
+      res     <- res[!is.na(res$pvalue), ]
+      res$fdr <- p.adjust(res$pvalue, method = "BH")
+      assign(rbp, res, envir = rbp_cache, inherits = FALSE)
+    } else {
+      assign(rbp, NULL, envir = rbp_cache, inherits = FALSE)
+    }
+    if (i %% 10 == 0 || i == length(new_rbps))
+      cat(sprintf("  %d / %d: %s\n", i, length(new_rbps), rbp))
+  }
+  saveRDS(Filter(Negate(is.null), as.list(rbp_cache)), das_cache_file)
+  cat(sprintf("Cache saved: %s\n", das_cache_file))
+} else {
+  cat("All RBPs cached.\n")
+}
+
+all_das <- do.call(rbind, Filter(Negate(is.null), lapply(compute_rbps, function(r) {
+  if (exists(r, envir = rbp_cache, inherits = FALSE)) get(r, envir = rbp_cache, inherits = FALSE)
+  else NULL
+})))
+
+if (!is.null(all_das) && nrow(all_das) > 0) {
+  all_das$key <- paste(all_das$rbp, all_das$site, sep = "_")
+  cat(sprintf("all_das: %d rows\n", nrow(all_das)))
+} else {
+  stop("all_das is empty.")
+}
+
+filter_sig <- function(df) {
+  if (use_fdr) filter(df, fdr    < pval_threshold | abs(das) > das_threshold)
+  else         filter(df, pvalue < pval_threshold | abs(das) > das_threshold)
+}
+
+
+k562_sig_sites  <- filter_sig(all_das) %>% filter(cell == "K562")  %>% distinct(rbp, site)
+hepg2_sig_sites <- filter_sig(all_das) %>% filter(cell == "HEPG2") %>% distinct(rbp, site)
+
+cross_cell_df <- inner_join(k562_sig_sites, hepg2_sig_sites, by = c("rbp", "site")) %>%
+  count(rbp, name = "intersect_n") %>%
+  left_join(k562_sig_sites  %>% count(rbp, name = "k562_total"),  by = "rbp") %>%
+  left_join(hepg2_sig_sites %>% count(rbp, name = "hepg2_total"), by = "rbp") %>%
+  mutate(support_inter_hepg2 = intersect_n / hepg2_total,
+         support_inter_k562  = intersect_n / k562_total) %>%
+  as.data.frame()
+
+fwrite(cross_cell_df, "cross_cell_intersection_support.csv", row.names = FALSE, quote = FALSE)
+cat(sprintf("Cross-cell intersection: %d RBPs with DAS in both cells\n", nrow(cross_cell_df)))
+
+
+all_results        <- list()
+all_results_k562   <- list()
+all_results_hepg2  <- list()
+global_detail_list <- list()
+
+for (nf in net_files) {
+  cat(sprintf("\nProcessing: %s\n", nf))
+  net         <- net_list[[nf]]
+  net$key     <- paste(net$RBP, net$AS_Site, sep = "_")
+  target_rbps <- intersect(unique(net$RBP), compute_rbps)
+  cat(sprintf("  Target RBPs: %d\n", length(target_rbps)))
+  if (length(target_rbps) == 0) { cat("  Skipping.\n"); next }
+  
+  das_sub <- all_das[all_das$rbp %in% target_rbps, ]
+  
+  preds_counts <- net %>%
+    filter(RBP %in% target_rbps, AS_Site %in% covered_sites) %>%
+    distinct(RBP, AS_Site) %>%
+    count(RBP, name = "preds") %>%
+    rename(rbp = RBP)
+  
+
+  sig <- filter_sig(das_sub) %>% filter(key %in% net$key)
+  
+  sig_dedup <- sig %>%
+    group_by(rbp, site, cell) %>%
+    summarize(pvalue  = min(pvalue,   na.rm = TRUE),
+              fdr     = min(fdr,      na.rm = TRUE),
+              abs_das = max(abs(das), na.rm = TRUE),
+              .groups = "drop") %>%
+    as.data.frame()
+  
+  truth_counts <- if (nrow(sig_dedup) > 0)
+    sig_dedup %>% distinct(rbp, site) %>% count(rbp, name = "truth_affect")
+  else
+    data.frame(rbp = character(), truth_affect = integer(), stringsAsFactors = FALSE)
+  
+  result <- merge(preds_counts, truth_counts, by = "rbp", all.x = TRUE)
+  result$truth_affect[is.na(result$truth_affect)] <- 0
+  result$support <- result$truth_affect / result$preds
+  result <- result[order(result$rbp), c("rbp", "truth_affect", "preds", "support")]
+  all_results[[nf]] <- result
+  
+  out_file <- paste0(sub("_Regulator_contribution_summary\\.csv$", "", basename(nf)),
+                     "_support_no_direction.csv")
+  fwrite(result, out_file, row.names = FALSE, quote = FALSE)
+  cat(sprintf("  Mean support: %.4f -> %s\n", mean(result$support, na.rm = TRUE), out_file))
+  
+  # K562-only support
+  sig_k562_cnt <- das_sub %>%
+    filter(cell == "K562") %>% filter_sig() %>%
+    filter(key %in% net$key) %>%
+    distinct(rbp, site) %>%
+    count(rbp, name = "truth_k562")
+  
+  res_k562 <- merge(preds_counts, sig_k562_cnt, by = "rbp", all.x = TRUE)
+  res_k562$truth_k562[is.na(res_k562$truth_k562)] <- 0
+  res_k562$support_k562 <- res_k562$truth_k562 / res_k562$preds
+  all_results_k562[[nf]] <- res_k562[order(res_k562$rbp),
+                                     c("rbp", "truth_k562", "preds", "support_k562")]
+  
+  # HepG2-only support
+  sig_hepg2_cnt <- das_sub %>%
+    filter(cell == "HEPG2") %>% filter_sig() %>%
+    filter(key %in% net$key) %>%
+    distinct(rbp, site) %>%
+    count(rbp, name = "truth_hepg2")
+  
+  res_hepg2 <- merge(preds_counts, sig_hepg2_cnt, by = "rbp", all.x = TRUE)
+  res_hepg2$truth_hepg2[is.na(res_hepg2$truth_hepg2)] <- 0
+  res_hepg2$support_hepg2 <- res_hepg2$truth_hepg2 / res_hepg2$preds
+  all_results_hepg2[[nf]] <- res_hepg2[order(res_hepg2$rbp),
+                                       c("rbp", "truth_hepg2", "preds", "support_hepg2")]
+  
+  if (nrow(sig_dedup) > 0) {
+    for (r in unique(sig_dedup$rbp)) {
+      sub <- sig_dedup[sig_dedup$rbp == r, c("site", "cell", "pvalue", "fdr", "abs_das")]
+      global_detail_list[[r]] <- rbind(global_detail_list[[r]], sub)
+    }
+  }
+}
+
+
+if (length(all_results) > 0) {
+  plot_df_step6 <- do.call(rbind, lapply(names(all_results), function(nf) {
+    df <- all_results[[nf]]
+    df$data_name <- sub("_Regulator_contribution_summary\\.csv$", "", basename(nf))
+    df
+  }))[, c("data_name", "rbp", "truth_affect", "preds", "support")]
+  fwrite(plot_df_step6, "step6_support_plot.csv", row.names = FALSE, quote = FALSE)
+  cat(sprintf("\nstep6_support_plot.csv saved (%d rows)\n", nrow(plot_df_step6)))
+}
+
+
+avg_k562_df <- do.call(rbind, lapply(names(all_results_k562), function(nf) {
+  df <- all_results_k562[[nf]]
+  df$net_file <- sub("_Regulator_contribution_summary\\.csv$", "", basename(nf))
+  df
+})) %>%
+  group_by(rbp) %>%
+  summarize(avg_support = mean(support_k562, na.rm = TRUE), .groups = "drop") %>%
+  as.data.frame()
+
+avg_hepg2_df <- do.call(rbind, lapply(names(all_results_hepg2), function(nf) {
+  df <- all_results_hepg2[[nf]]
+  df$net_file <- sub("_Regulator_contribution_summary\\.csv$", "", basename(nf))
+  df
+})) %>%
+  group_by(rbp) %>%
+  summarize(avg_support = mean(support_hepg2, na.rm = TRUE), .groups = "drop") %>%
+  as.data.frame()
+
+fwrite(avg_k562_df,  "avg_support_k562_per_rbp.csv",  row.names = FALSE, quote = FALSE)
+fwrite(avg_hepg2_df, "avg_support_hepg2_per_rbp.csv", row.names = FALSE, quote = FALSE)
+cat(sprintf("Per-RBP avg support: K562 %d RBPs, HepG2 %d RBPs\n",
+            nrow(avg_k562_df), nrow(avg_hepg2_df)))
+
+
+group_labels <- c(
+  "Inter / HepG2",   
+  "Inter / K562",    
+  "NetFile / K562",  
+  "NetFile / HepG2"  
+)
+
+violin_df <- rbind(
+  data.frame(group   = group_labels[1],
+             rbp     = cross_cell_df$rbp,
+             support = cross_cell_df$support_inter_hepg2,
+             stringsAsFactors = FALSE),
+  data.frame(group   = group_labels[2],
+             rbp     = cross_cell_df$rbp,
+             support = cross_cell_df$support_inter_k562,
+             stringsAsFactors = FALSE),
+  data.frame(group   = group_labels[3],
+             rbp     = avg_k562_df$rbp,
+             support = avg_k562_df$avg_support,
+             stringsAsFactors = FALSE),
+  data.frame(group   = group_labels[4],
+             rbp     = avg_hepg2_df$rbp,
+             support = avg_hepg2_df$avg_support,
+             stringsAsFactors = FALSE)
+)
+violin_df$group <- factor(violin_df$group, levels = group_labels)
+
+ggplot(violin_df, aes(x = group, y = support, fill = group)) +
+  geom_violin(scale = "width") +
+  stat_boxplot(geom = "errorbar", width = 0.1) +
+  geom_boxplot(size = 0.4, width = 0.15, outlier.fill = NA, outlier.color = NA) +
+  ggtitle("RBP knockdown support ratio comparison") +
+  theme_bw() +
+  theme(
+    axis.text.x      = element_text(angle = 30, colour = "black", size = 15, hjust = 1),
+    axis.text.y      = element_text(size = 15, face = "plain"),
+    axis.title.y     = element_text(size = 15, face = "plain"),
+    axis.title.x     = element_text(size = 15, face = "plain"),
+    plot.title       = element_text(size = 15, face = "bold", hjust = 0.5),
+    panel.border     = element_blank(),
+    axis.line        = element_line(colour = "black", size = 1),
+    legend.text      = element_text(face = "italic", colour = "black", size = 15),
+    legend.title     = element_text(face = "italic", colour = "black", size = 15),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  ) +
+  ylab("Support ratio") +
+  xlab("Groups")
+
+
+
+# =============================================================================
+# Suppl figure 5
+# =============================================================================
+
+hcccd4 = read.table("lgb/hcc_cd4sum/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+hcccd8 = read.table("lgb/hcc_cd8sum/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+crccd4 = read.table("lgb/crc_cd4sum/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+crccd8 = read.table("lgb/crc_cd8sum/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+nk = read.table("lgb/nk/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+mac = read.table("lgb/mac/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+dc = read.table("lgb/dc/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+pdac = read.table("lgb/pdac/summary/Regulator_contribution_summary.csv", header = T, sep = ',', stringsAsFactors = F)
+
+hcccd4$sum = paste(hcccd4$RBP, hcccd4$AS, hcccd4$Direction, sep = '_')
+hcccd8$sum = paste(hcccd8$RBP, hcccd8$AS, hcccd8$Direction, sep = '_')
+crccd4$sum = paste(crccd4$RBP, crccd4$AS, crccd4$Direction, sep = '_')
+crccd8$sum = paste(crccd8$RBP, crccd8$AS, crccd8$Direction, sep = '_')
+nk$sum = paste(nk$RBP, nk$AS, nk$Direction, sep = '_')
+mac$sum = paste(mac$RBP, mac$AS, mac$Direction, sep = '_')
+dc$sum = paste(dc$RBP, dc$AS, dc$Direction, sep = '_')
+pdac$sum = paste(pdac$RBP, pdac$AS, pdac$Direction, sep = '_')
+
+
+sets <- list(
+  HCC_CD4 = hcccd4$sum,
+  HCC_CD8 = hcccd8$sum,
+  CRC_CD4 = crccd4$sum,
+  CRC_CD8 = crccd8$sum,
+  NK = nk$sum,
+  Mac = mac$sum,
+  DC = dc$sum,
+  PDAC = pdac$sum
+)
+
+n <- length(sets)
+names_vec <- names(sets)
+celltype_consistency <- matrix(NA, nrow = n, ncol = n, dimnames = list(names_vec, names_vec))
+
+for (i in 1:n) {
+  for (j in 1:n) {
+    inter_size <- length(intersect(sets[[i]], sets[[j]]))
+    celltype_consistency[i, j] <- inter_size / length(sets[[i]])  
+  }
+}
+
+# Generate Heatmap
+ht <- Heatmap(celltype_consistency, 
+              name = "Consistency", 
+              column_title = "Consistency of predicted RBP-AS circuits", 
+              col = col_fun_consistency,
+              cluster_rows = FALSE, 
+              cluster_columns = FALSE, 
+              show_row_names = TRUE, 
+              show_column_names = TRUE,  
+              row_names_side = "right",
+              column_names_rot = 90)
+draw(ht)
+
+ven <- venndetail(list(hcc_cd8 = hcccd8$sum, crc_cd8 = crccd8$sum, crc_cd4 = crccd4$sum, hcc_cd4 = hcccd4$sum))
+
+table(ven@result$Subset)
+
+plot(ven, type = "vennpie")
+plot(ven, type = "upset")
+
