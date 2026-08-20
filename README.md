@@ -31,12 +31,10 @@ while serving as templates for analyzing your own data.
 
 ## Usage
 
-First enter the directory `src` as the CWD.
-
 ### Prepare the single-cell AS matrix
 
 ```bash
-python get_filter/get_filter.py [-h] [--input YOUR_TAB_FILE] [--filter-output YOUR_AS_FILE]
+python src/get_filter/get_filter.py [-h] [--input YOUR_TAB_FILE] [--filter-output YOUR_AS_FILE]
 
 optional arguments:
   -h, --help            Show the most complete help message and exit.
@@ -52,7 +50,7 @@ optional arguments:
 ### Data preprocessing
 
 ```bash
-python preprocess.py [-h] [--splice_file YOUR_AS_FILE] [--gene_file YOUR_RBP_EXPRESSION_FILE] [--output_dir YOUR_OUTPUT_DIR] [--low_threshold YOUR_CLASSIFICATION_THRESHOLD_LOW] [--high_threshold YOUR_CLASSIFICATION_THRESHOLD_HIGH]
+python src/preprocess.py [-h] [--splice_file YOUR_AS_FILE] [--gene_file YOUR_RBP_EXPRESSION_FILE] [--output_dir YOUR_OUTPUT_DIR] [--low_threshold YOUR_CLASSIFICATION_THRESHOLD_LOW] [--high_threshold YOUR_CLASSIFICATION_THRESHOLD_HIGH]
 
 optional arguments:
   -h, --help            Show the most complete help message and exit.
@@ -89,7 +87,7 @@ optional arguments:
 ### Train the models and explain the models
 
 ```bash
-python train.py [-h] [-k K] [-i INPUT] [-b] [-o OUTPUT]
+python src/train.py [-h] [-k K] [-i INPUT] [-b] [-o OUTPUT]
 
 optional arguments:
 
@@ -124,7 +122,7 @@ base_dir/
 ### Screening of AS regulatory factors
 
 ```bash
-python reg_summary.py [-h] [-b BASE_DIR]
+python src/reg_summary.py [-h] [-b BASE_DIR]
 
 optional arguments:
   -h, --help            Show the most complete help message and exit.
